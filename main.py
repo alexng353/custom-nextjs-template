@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, webbrowser
 
 # read cli args and set variables
 args = sys.argv[1:]
@@ -12,8 +12,29 @@ else:
 if "--name" in args:
     # find the index of the --name argument
     name = args[args.index("--name")+1]
+    # replace all spaces with underscores
+    if name.strip() == "":
+        print("No name given")
+        sys.exit(1)
+    name = name.replace(" ", "_")
+    
 else:
     name = input("Name:\n>>>")
+if "--dev" in args:
+    dev = True
+    if "--port" in args:
+        port = args[args.index("--dev")+1]
+    else:
+        port = input("Port:\n>>>")
+        if not port.isnumeric():
+            raise Exception("Port must be a number")
+        if int(port) < 1024 or int(port) > 65535:
+            raise Exception("Port must be between 1024 and 65535")
+        if port == "":
+            raise Exception("Port must be a number")
+else:
+    dev = False
+
 
 tailwind = True if "--tailwind" in args else False
 mui = True if "--mui" in args else False
@@ -76,3 +97,7 @@ if tailwind:
     
 if mui:
     os.system(f'cd {name} && npm install @mui/material @emotion/react @emotion/styled')
+
+if dev:
+    os.system(f'cd {name} && npm run dev {"-- -p " + port if port else ""}')
+    
