@@ -34,6 +34,9 @@ if "--dev" in args:
             raise Exception("Port must be a number")
 else:
     dev = False
+if "--nobrowser" in args:
+    nobrowser = True
+
 
 
 tailwind = True if "--tailwind" in args else False
@@ -100,4 +103,5 @@ if mui:
 
 if dev:
     os.system(f'cd {name} && npm run dev {"-- -p " + port if port else ""}')
-    
+    if not nobrowser:
+        webbrowser.open(f"http://localhost:{port}")
